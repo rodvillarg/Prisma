@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generado/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model Cliente {
+  id        Int    @id @default(autoincrement())
+  nombre    String @db.VarChar(100)
+  telefono  String @db.VarChar(20)
+  correo    String @unique @db.VarChar(80)
+  vehiculos Vehiculo[]
+
+  @@map("clientes")
+}
+
+model Vehiculo {
+  id        Int    @id @default(autoincrement())
+  clienteId Int
+  placa     String @unique @db.VarChar(10)
+  marca     String @db.VarChar(30)
+  modelo    String @db.VarChar(30)
+  anio      Int
+  ordenes   OrdenServicio[]
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+
+  @@index([clienteId])
+  @@map("vehiculos")
+}
+
+enum EstadoOrden {
+  abierta
+  en_proceso
+  entregada
+  cancelada
+}
+
+model OrdenServicio {
+  id           Int         @id @default(autoincrement())
+  vehiculoId   Int
+  descripcion  String      @db.VarChar(255)
+  fechaIngreso DateTime    @db.Date
+  estado       EstadoOrden @default(abierta)
+  refacciones  Refaccion[]
+
+  vehiculo Vehiculo @relation(fields: [vehiculoId], references: [id])
+
+  @@index([vehiculoId])
+  @@map("ordenes")
+}
+
+model Refaccion {
+  id      Int     @id @default(autoincrement())
+  ordenId Int
+  nombre  String  @db.VarChar(30)
+  precio  Decimal @db.Decimal(10, 2)
+
+  orden OrdenServicio @relation(fields: [ordenId], references: [id])
+
+  @@index([ordenId])
+  @@map("refacciones")
+}

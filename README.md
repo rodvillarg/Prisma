@@ -1,0 +1,2 @@
+**1. ¿Qué pasaría si intentaras borrar un Cliente que todavía tiene un Vehiculo?**
+No se podría borrar, porque la migración generó la llave foránea con ON DELETE RESTRICT, y si el Cliente todavía tiene un Vehiculo, MySQL no deja borrarlo.
