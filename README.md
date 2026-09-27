@@ -1,0 +1,2 @@
+**1. ¿Por qué esa combinación única evita reservar la misma mesa dos veces en el mismo turno?**
+Porque el @@unique([mesaId, turnoId]) crea un índice único sobre esas dos columnas juntas, entonces MySQL no deja insertar dos filas con la misma mesa y el mismo turno, aunque el cliente o la fecha sean distintos.
